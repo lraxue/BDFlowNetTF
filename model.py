@@ -54,6 +54,7 @@ class WeightedFlow(object):
         self.optim = optim
         self.scales = [params.scale, params.scale / 2., params.scale / 4., params.scale / 8., params.scale / 16.]
         self.s = 20.
+        self.patch_kernel_size = 63
 
         self.build_model()
         self.build_outputs()
@@ -224,6 +225,19 @@ class WeightedFlow(object):
                              weights_initializer=self.msra_initializer(3, 4))
         return output
 
+    def patch_l1_loss(self, img1, img2, kernel_size=63, stride=1, padding='SAME'):
+        fil
+
+
+    def NCC_vector(self, vec1, vec2):
+        return None
+
+    def NCC_image(self, img1, img2, kernel_size=63, stride=1, padding='SAME'):
+        patches1 = tf.extract_image_patches(img1, ksizes=[1, kernel_size, kernel_size, 1], strides=[1, stride, stride, 1], rates=[1, 1, 1, 1], padding=padding)
+        patches2 = tf.extract_image_patches(img2, ksizes=[1, kernel_size, kernel_size, 1], strides=[1, stride, stride, 1], rates=[1, 1, 1, 1], padding=padding)
+
+        b, h, w, _ = patches1.shape().aslist()
+
     def build_bdflownet(self):
         conv = self.conv
         upconv = self.upconv
@@ -343,8 +357,10 @@ class WeightedFlow(object):
         with tf.variable_scope('losses', reuse=self.reuse_variables):
             # Image reconstruction
             # L1
+            # self.l1_left = [self.patch_l1_loss(self.left_est[i], self.left_pyramid[i], kernel_size= self.patch_kernel_size//(2**i)) for i in range(self.params.scale)]
             self.l1_left = [tf.abs(self.left_est[i] - self.left_pyramid[i]) for i in range(self.params.scale)]
             self.l1_reconstruction_loss_left = [tf.reduce_mean(l) for l in self.l1_left]
+            # self.l1_right = [self.patch_l1_loss(self.right_est[i], self.right_pyramid[i], kernel_size= self.patch_kernel_size//(2**i)) for i in range(self.params.scale)]
             self.l1_right = [tf.abs(self.right_est[i] - self.right_pyramid[i]) for i in range(self.params.scale)]
             self.l1_reconstruction_loss_right = [tf.reduce_mean(l) for l in self.l1_right]
 

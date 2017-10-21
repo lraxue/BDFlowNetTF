@@ -55,13 +55,13 @@ def aee_tf(gt, calc_flows):
 
 
 RGB_TO_YUV = np.array([
-    [ 0.299,     0.587,     0.114],
-    [-0.168736, -0.331264,  0.5],
-    [ 0.5,      -0.418688, -0.081312]])
+    [0.299, 0.587, 0.114],
+    [-0.168736, -0.331264, 0.5],
+    [0.5, -0.418688, -0.081312]])
 YUV_TO_RGB = np.array([
-    [1.0,  0.0,      1.402],
+    [1.0, 0.0, 1.402],
     [1.0, -0.34414, -0.71414],
-    [1.0,  1.772,    0.0]])
+    [1.0, 1.772, 0.0]])
 
 YUV_OFFSET = np.array([0, 128.0, 128.0]).reshape(1, 1, -1)
 MAX_VAL = 255.0
@@ -111,6 +111,7 @@ def test_flow_reader():
         flow = load_flow(filenames, 'flyingchairs', flags.FLAGS)
         print(flow)
 
+
 def test_rgb2yuv():
     # rgb = np.arange(60.).reshape(4, 5, 3)
     rgb = imread('/home/fei/Data/fei/flow/FlyingChairs_release/data_png/00001_img1.png')
@@ -137,28 +138,15 @@ def test_aee():
     print(sess.run(aee23))
 
 
-
 def main():
     # test_flow_reader()
     # test_transform()
     # test_rgb2yuv()
 
     # test_aee()
-
-    I = tf.ones([2, 1, 2])
-
-    I_0 = tf.expand_dims(I[:, :, 0], -1)
-    I_1 = tf.expand_dims(I[:, :, 1], -1)
-
-    I2 = tf.concat([-I_0, I_1], -1)
-    I3 = tf.concat([I_0, -I_1], -1)
+    x = tf.constant(value=[[1., 2., 3.], [4., 5., 6.], [7., 8., 9.]], dtype=tf.float32, shape=[3, 3])
 
     sess = tf.Session()
-    print(sess.run(I))
-    print(sess.run(I2))
-    print(sess.run(I3))
-    print(I.shape)
-    print(I2.shape)
 
 
 if __name__ == '__main__':
