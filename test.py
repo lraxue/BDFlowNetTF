@@ -137,6 +137,17 @@ def test_aee():
     print(sess.run(aee02))
     print(sess.run(aee23))
 
+def test_filter(kernel_size, mode='mean'):
+    values = np.ones([1, kernel_size, kernel_size, 3], np.float32)
+
+    img = tf.ones([1, 5, 5, 3], tf.float32)
+    ftr = tf.Variable(values)
+    out = tf.nn.conv2d(img, ftr, strides=[1, 1, 1, 1], padding='VALID')
+
+    sess = tf.Session()
+    sess.run(img)
+    sess.run(ftr)
+    sess.run(out)
 
 def main():
     # test_flow_reader()
@@ -144,9 +155,8 @@ def main():
     # test_rgb2yuv()
 
     # test_aee()
-    x = tf.constant(value=[[1., 2., 3.], [4., 5., 6.], [7., 8., 9.]], dtype=tf.float32, shape=[3, 3])
 
-    sess = tf.Session()
+    test_filter(3)
 
 
 if __name__ == '__main__':
